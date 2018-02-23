@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import time
-import urllib
 from os.path import dirname
 
-import urllib2
 from adapt.intent import IntentBuilder
 from bs4 import BeautifulSoup
 from firebase import firebase
 from mycroft.skills.core import MycroftSkill
+if sys.version_info[0] < 3:
+    from urllib import quote
+    from urllib2 import urlopen
+else:
+    from urllib.request import urlopen
+    from urllib.parse import quote
 
 __author__ = 'augustnmonteiro'
 
@@ -29,9 +34,9 @@ class YoutubeSkill(MycroftSkill):
         self.register_intent(youtube, self.youtube)
 
     def search(self, text):
-        query = urllib.quote(text)
+        query = quote(text)
         url = "https://www.youtube.com/results?search_query=" + query
-        response = urllib2.urlopen(url)
+        response = urlopen(url)
         html = response.read()
         soup = BeautifulSoup(html)
         for vid in soup.findAll(attrs={'class': 'yt-uix-tile-link'}):
